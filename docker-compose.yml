@@ -1,0 +1,32 @@
+version: "3.7"
+services:
+  phpmyadmin:
+    container_name: 'jom'
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    depends_on:
+      - db
+    environment:
+      # Con esta variable consigo conectarme a cualquier servidor que quiera en la pantalla de login
+      PMA_ARBITRARY: 1
+      # Con estas variables configuro el servidor al que quiero conectarme
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: admin
+      PMA_port: 3600
+      UPLOAD_LIMIT: 600M
+    ports:
+      - "8080:80"
+
+  db:
+    image: mysql:5.7
+    command: --default-authentication-plugin=mysql_native_password
+    container_name: 'jom-mysql'
+    restart: always
+    ports:
+      - 3306:3306
+    volumes:
+      - ./mysql_dump:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: fenix_prod_altered
